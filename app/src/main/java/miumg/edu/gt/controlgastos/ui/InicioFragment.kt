@@ -23,6 +23,7 @@ import miumg.edu.gt.controlgastos.util.ServicioClima
 import miumg.edu.gt.controlgastos.util.ServicioVersiculo
 import java.util.Calendar
 import kotlin.math.roundToInt
+import androidx.core.content.ContextCompat
 
 class InicioFragment : Fragment() {
 
@@ -184,6 +185,15 @@ class InicioFragment : Fragment() {
 
         // Barra de colores
         ResumenMes.pintar(binding.resumen, ingresos, egresos, usarDiezmo)
+
+        // Plantita: refleja cuánto te queda de los ingresos del mes
+        val estado = estadoPlanta(ingresos, egresos, usarDiezmo)
+        binding.planta.mostrar(estado)
+        binding.tvEstadoPlanta.text = estado.titulo
+        binding.tvEstadoPlanta.setTextColor(
+            ContextCompat.getColor(requireContext(), estado.colorId)
+        )
+        binding.tvPlantaAyuda.text = estado.ayuda
 
         // Gastos por categoría (los 5 mayores)
         ListaCategorias.pintar(
