@@ -30,6 +30,8 @@ import miumg.edu.gt.controlgastos.util.Formato
 import miumg.edu.gt.controlgastos.util.Periodo
 import miumg.edu.gt.controlgastos.util.Preferencias
 import java.util.Locale
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 
 abstract class AgregarMovimientoActivity : AppCompatActivity() {
 
@@ -197,9 +199,15 @@ abstract class AgregarMovimientoActivity : AppCompatActivity() {
     private fun configurarFecha() {
         mostrarFecha()
         binding.etFecha.setOnClickListener {
+            // Solo se pueden elegir días hasta hoy
+            val restricciones = CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointBackward.now())
+                .build()
+
             val selector = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Selecciona la fecha")
                 .setSelection(Formato.localAUtc(fechaSeleccionada))
+                .setCalendarConstraints(restricciones)
                 .build()
             selector.addOnPositiveButtonClickListener { utc ->
                 fechaSeleccionada = Formato.utcALocal(utc)

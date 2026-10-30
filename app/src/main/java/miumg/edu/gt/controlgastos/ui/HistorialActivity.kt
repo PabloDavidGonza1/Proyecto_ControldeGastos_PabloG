@@ -6,10 +6,12 @@ import android.view.View
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
+import miumg.edu.gt.controlgastos.R
 import miumg.edu.gt.controlgastos.data.DatabaseHelper
 import miumg.edu.gt.controlgastos.databinding.ActivityHistorialBinding
 import miumg.edu.gt.controlgastos.model.TipoMovimiento
@@ -47,6 +49,7 @@ class HistorialActivity : AppCompatActivity() {
         binding.rvMovimientos.layoutManager = LinearLayoutManager(this)
         binding.rvMovimientos.adapter = adapter
 
+        // Si se intenta pasar de los límites, cargar() lo regresa al último mes permitido
         binding.selectorMes.btnMesAnterior.setOnClickListener {
             mes = mes.minusMonths(1)
             cargar()
@@ -81,7 +84,29 @@ class HistorialActivity : AppCompatActivity() {
         }
     }
 
+    // Primer y último mes que tiene sentido visitar:
+    // desde el mes del movimiento más antiguo hasta el mes actual
+    // (o hasta el del movimiento más reciente, si alguno tiene fecha futura)
+    private fun limites(): Pair<YearMonth, YearMonth> {
+        val actual = Periodo.actual()
+        val fechas = db.obtenerMovimientos().map { it.fecha }
+        val menor = fechas.minOrNull() ?: return actual to actual
+        val mayor = fechas.maxOrNull() ?: return actual to actual
+        return minOf(Periodo.mesDe(menor), actual) to maxOf(Periodo.mesDe(mayor), actual)
+    }
+
+    // Una flecha apagada se ve tenue y no responde
+    private fun marcar(flecha: View, activa: Boolean) {
+        flecha.isEnabled = activa
+        flecha.alpha = if (activa) 1f else 0.3f
+    }
+
     private fun cargar() {
+        val (primero, ultimo) = limites()
+        mes = mes.coerceIn(primero, ultimo)
+        marcar(binding.selectorMes.btnMesAnterior, mes.isAfter(primero))
+        marcar(binding.selectorMes.btnMesSiguiente, mes.isBefore(ultimo))
+
         binding.selectorMes.tvMes.text = Periodo.nombre(mes)
 
         val desde = Periodo.inicio(mes)
@@ -105,6 +130,21 @@ class HistorialActivity : AppCompatActivity() {
         DisponibleMes.pintar(binding.disponible, anterior, balanceMes, etiqueta)
 
         ResumenMes.pintar(binding.resumen, ingresos, gastos, usarDiezmo)
+
+        // Plantita del mes que se está viendo
+        val estado = estadoPlanta(ingresos, gastos, usarDiezmo)
+        binding.planta.mostrar(estado)
+        if (estado == EstadoPlanta.SEMILLA && mes != Periodo.actual()) {
+            binding.tvEstadoPlanta.text = "Sin movimientos"
+            binding.tvEstadoPlanta.setTextColor(
+                ContextCompat.getColor(this, R.color.text_secondary)
+            )
+            binding.tvPlantaAyuda.text = "No hay ingresos ni gastos registrados en este mes."
+        } else {
+            binding.tvEstadoPlanta.text = estado.titulo
+            binding.tvEstadoPlanta.setTextColor(ContextCompat.getColor(this, estado.colorId))
+            binding.tvPlantaAyuda.text = estado.ayuda
+        }
 
         binding.tvTituloIngresos.text = "Ingresos · ${Formato.moneda(ingresos)}"
         ListaCategorias.pintar(
