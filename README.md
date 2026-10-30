@@ -218,38 +218,7 @@ Cómo las cuido:
 
 ---
 
-## 8. Cómo ejecutarla
-
-1. Abrir el proyecto en **Android Studio**.
-2. Esperar a que termine la sincronización de Gradle.
-3. Elegir un celular o un emulador con Android 8.0 o superior.
-4. Pulsar **Run**.
-
-Para ver el clima y el versículo se necesita internet. Lo demás funciona sin conexión.
-
-Para generar el APK de prueba:
-
-```
-.\gradlew.bat assembleDebug
-```
-
-El archivo queda en `app/build/outputs/apk/debug/app-debug.apk`.
-
----
-
-## 9. Pendientes e ideas
-
-- Presupuesto por categoría con alertas.
-- Reporte del mes en PDF.
-- Bloqueo con huella o PIN.
-- Tipo de cambio dólar-quetzal.
-- Un jardín con la plantita de cada mes.
-- Respaldo y restauración de los datos.
-- La librería de gráficas (MPAndroidChart) sigue en Gradle, pero ya no se usa y se puede quitar.
-
----
-
-## 10. Créditos y notas
+## 8. Créditos y notas
 
 - Datos del clima: [Open-Meteo.com](https://open-meteo.com), licencia CC BY 4.0.
 - Versículos: [Bolls Bible](https://bolls.life), versión Reina-Valera 1960. Esa versión tiene derechos de autor, así que este uso es solo personal o académico. Si la app se publica, hay que cambiarla por una fuente con licencia.
