@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Marca -->
+    <color name="primary">#1E3A5F</color>
+    <color name="primary_dark">#14284A</color>
+    <color name="primary_light">#2F5D8C</color>
+
+    <!-- Ingresos y egresos -->
+    <color name="income">#10B981</color>
+    <color name="income_soft">#D1FAE5</color>
+    <color name="expense">#EF4444</color>
+    <color name="expense_soft">#FEE2E2</color>
+
+    <!-- Fondos y textos -->
+    <color name="background">#F4F6FA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="text_primary">#1F2937</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="divider">#E5E7EB</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="warning">#F59E0B</color>
+    <color name="nav_indicator">#DCE8F7</color>
+    <color name="diezmo">#8B5CF6</color>
+</resources>

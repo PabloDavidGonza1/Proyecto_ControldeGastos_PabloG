@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Control de Gastos</string>
+    <string name="balance_total">Balance total</string>
+    <string name="ingresos">Ingresos</string>
+    <string name="egresos">Egresos</string>
+</resources>
