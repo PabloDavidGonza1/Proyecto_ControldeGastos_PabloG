@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import miumg.edu.gt.controlgastos.R
 import miumg.edu.gt.controlgastos.data.DatabaseHelper
 import miumg.edu.gt.controlgastos.databinding.FragmentInicioBinding
 import miumg.edu.gt.controlgastos.model.TipoMovimiento
@@ -19,9 +20,9 @@ import miumg.edu.gt.controlgastos.util.Periodo
 import miumg.edu.gt.controlgastos.util.Preferencias
 import miumg.edu.gt.controlgastos.util.ResumenMes
 import miumg.edu.gt.controlgastos.util.ServicioClima
+import miumg.edu.gt.controlgastos.util.ServicioVersiculo
 import java.util.Calendar
 import kotlin.math.roundToInt
-import miumg.edu.gt.controlgastos.R
 
 class InicioFragment : Fragment() {
 
@@ -65,6 +66,7 @@ class InicioFragment : Fragment() {
         super.onResume()
         actualizar()
         cargarClima()
+        cargarVersiculo()
     }
 
     override fun onDestroyView() {
@@ -87,7 +89,24 @@ class InicioFragment : Fragment() {
         b.tvNombre.text = if (nombre.isBlank()) "Bienvenido" else nombre
     }
 
-      // ---------- CLIMA ----------
+    // ---------- VERSÍCULO DEL DÍA ----------
+    private fun cargarVersiculo() {
+        val ctx = context ?: return
+        ServicioVersiculo.cargar(ctx) { versiculo ->
+            // La pantalla pudo cerrarse mientras se descargaba
+            val b = _binding ?: return@cargar
+
+            if (versiculo == null) {
+                b.cardVersiculo.visibility = View.GONE
+                return@cargar
+            }
+            b.cardVersiculo.visibility = View.VISIBLE
+            b.tvVersiculo.text = "“${versiculo.texto}”"
+            b.tvVersiculoRef.text = "${versiculo.referencia} (${versiculo.version})"
+        }
+    }
+
+    // ---------- CLIMA ----------
     private fun cargarClima() {
         val ctx = context ?: return
         ServicioClima.cargar(ctx) { clima ->
